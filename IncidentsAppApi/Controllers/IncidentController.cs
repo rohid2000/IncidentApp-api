@@ -80,10 +80,17 @@ namespace IncidentsAppApi.Controllers
             return NoContent();
         }
 
-        //[HttpDelete]
-        //public ActionResult<Incident> RemoveIncidentByid()
-        //{
-            
-        //}
+        [HttpDelete("{id}")]
+        public IActionResult RemoveIncidentByid(int id)
+        {
+            var incident = incidents.FirstOrDefault(i => i.Id == id);
+            if (incident is null)
+            {
+                return NotFound();
+            }
+
+            incidents.Remove(incident);
+            return NoContent();
+        }
     }
 }
