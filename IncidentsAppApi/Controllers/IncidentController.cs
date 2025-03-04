@@ -1,50 +1,28 @@
-﻿using IncidentsAppApi.Models;
+﻿using IncidentsAppApi.Database;
+using IncidentsAppApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace IncidentsAppApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class IncidentController : ControllerBase
+    public class IncidentController(IncidentDbContext context) : ControllerBase
     {
-        static private List<Incident> incidents = new List<Incident>
-        {
-            new Incident
-            {
-                Id = 1,
-                Description = "Poep op de stoep",
-                Status = "In behandeling",
-                Priority = "Hoog"
-            },
-
-            new Incident
-            {
-                Id = 2,
-                Description = "Omgevallen boom",
-                Status = "In behandeling",
-                Priority = "Hoog"
-            },
-
-            new Incident
-            {
-                Id = 3,
-                Description = "Graffiti op de muur in een tunnel",
-                Status = "Gemeld",
-                Priority = "Laag"
-            },
-        };
+        private readonly IncidentDbContext _context = context;
 
         [HttpGet]
-        public ActionResult<List<Incident>> GetAllIncidents()
+        public async Task<ActionResult<List<Incident>>> GetAllIncidents()
         {
-            return Ok(incidents);
+            return Ok(await _context.Incidents.ToListAsync());
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Incident> GetIncidentById(int id)
+        public async Task<ActionResult<Incident>> GetIncidentById(int id)
         {
-            var incident = incidents.FirstOrDefault(i => i.Id == id);
+            var incident = await _context.Incidents.FindAsync(id);
             if (incident is null)
             {
                 return NotFound();
@@ -53,21 +31,23 @@ namespace IncidentsAppApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Incident> AddIncident(Incident newIncident)
+        public async Task<ActionResult<Incident>> AddIncident(Incident newIncident)
         {
             if (newIncident is null)
             {
                 return BadRequest();
             }
-            newIncident.Id = incidents.Max(i => i.Id) + 1;
-            incidents.Add(newIncident);
+
+            _context.Incidents.Add(newIncident);
+            await _context.SaveChangesAsync();
+
             return CreatedAtAction(nameof(GetIncidentById), new { id = newIncident.Id }, newIncident);
         }
 
         [HttpPut("{id}")]//Updates whole object
-        public IActionResult UpdateIncident(int id, Incident updatedIncident)
+        public async Task<IActionResult> UpdateIncident(int id, Incident updatedIncident)
         {
-            var incident = incidents.FirstOrDefault(i => i.Id == id);
+            var incident = await _context.Incidents.FindAsync(id);
             if (incident is null)
             {
                 return NotFound();
@@ -77,19 +57,23 @@ namespace IncidentsAppApi.Controllers
             incident.Status = updatedIncident.Status;
             incident.Priority = updatedIncident.Priority;
 
+            await _context.SaveChangesAsync();
+
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult RemoveIncidentByid(int id)
+        public async Task<IActionResult> DeleteIncidentByid(int id)
         {
-            var incident = incidents.FirstOrDefault(i => i.Id == id);
+            var incident = await _context.Incidents.FindAsync(id);
             if (incident is null)
             {
                 return NotFound();
             }
 
-            incidents.Remove(incident);
+            _context.Incidents.Remove(incident);
+            await _context.SaveChangesAsync();
+
             return NoContent();
         }
     }
