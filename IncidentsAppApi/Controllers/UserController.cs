@@ -18,6 +18,27 @@ namespace IncidentsAppApi.Controllers
             return Ok(await _context.Users.ToListAsync());
         }
 
-        
+        public async Task<ActionResult<User>> GetUserById(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
+
+        public async Task<ActionResult<User>> AddUser(User newUser)
+        {
+            if (newUser is null)
+            {
+                return BadRequest();
+            }
+
+            _context.Users.Add(newUser);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetUserById), new { id = newUser.Id }, newUser);
+        }
     }
 }
