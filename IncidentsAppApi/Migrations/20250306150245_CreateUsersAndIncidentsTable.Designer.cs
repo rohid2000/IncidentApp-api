@@ -12,7 +12,7 @@ namespace IncidentsAppApi.Migrations
 {
     [DbContext(typeof(MyDbContext))]
     [Migration("20250306150245_CreateUsersTable")]
-    partial class CreateUsersTable
+    partial class CreateUsersAndIncidentsTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
