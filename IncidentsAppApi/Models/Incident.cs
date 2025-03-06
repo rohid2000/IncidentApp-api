@@ -7,6 +7,5 @@
         public string Status { get; set; } = "Gemeld";
         public string Priority { get; set; }
         public int UserId { get; set; }
-        public User User { get; set;  }
     }
 }

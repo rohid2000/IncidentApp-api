@@ -10,9 +10,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IncidentsAppApi.Migrations
 {
-    [DbContext(typeof(IncidentDbContext))]
-    [Migration("20250304224436_Seeding")]
-    partial class Seeding
+    [DbContext(typeof(MyDbContext))]
+    [Migration("20250306150245_CreateUsersTable")]
+    partial class CreateUsersTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,32 +44,52 @@ namespace IncidentsAppApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Incidents");
+                    b.HasIndex("UserId");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Poep op de stoep",
-                            Priority = "Hoog",
-                            Status = "In behandeling"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Omgevallen boom",
-                            Priority = "Hoog",
-                            Status = "In behandeling"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Graffiti op de muur in een tunnel",
-                            Priority = "Laag",
-                            Status = "Gemeld"
-                        });
+                    b.ToTable("Incidents");
+                });
+
+            modelBuilder.Entity("IncidentsAppApi.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("IncidentsAppApi.Models.Incident", b =>
+                {
+                    b.HasOne("IncidentsAppApi.Models.User", null)
+                        .WithMany("Incidents")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("IncidentsAppApi.Models.User", b =>
+                {
+                    b.Navigation("Incidents");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,9 +9,9 @@ namespace IncidentsAppApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class IncidentController(IncidentDbContext context) : ControllerBase
+    public class IncidentController(MyDbContext context) : ControllerBase
     {
-        private readonly IncidentDbContext _context = context;
+        private readonly MyDbContext _context = context;
 
         [HttpGet]
         public async Task<ActionResult<List<Incident>>> GetAllIncidents()
