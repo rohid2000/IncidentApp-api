@@ -1,6 +1,5 @@
 ﻿using IncidentsAppApi.Database;
 using IncidentsAppApi.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +17,7 @@ namespace IncidentsAppApi.Controllers
             return Ok(await _context.Users.ToListAsync());
         }
 
+        [HttpGet]
         public async Task<ActionResult<User>> GetUserById(int id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -28,6 +28,7 @@ namespace IncidentsAppApi.Controllers
             return Ok(user);
         }
 
+        [HttpPost]
         public async Task<IActionResult> AddUser(User newUser)
         {
             if (newUser is null)

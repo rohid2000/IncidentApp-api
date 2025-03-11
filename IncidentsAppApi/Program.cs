@@ -19,8 +19,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
 
-    app.MapScalarApiReference();
     app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
 app.UseHttpsRedirection();
