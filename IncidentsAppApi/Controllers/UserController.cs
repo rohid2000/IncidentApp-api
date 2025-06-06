@@ -2,6 +2,8 @@
 using IncidentsAppApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace IncidentsAppApi.Controllers
 {
