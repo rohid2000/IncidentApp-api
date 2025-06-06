@@ -39,12 +39,6 @@ namespace IncidentsAppApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Incidents", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Incidents_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
