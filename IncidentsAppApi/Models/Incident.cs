@@ -13,7 +13,6 @@ namespace IncidentsAppApi.Models
         public string? Priority { get; set; } = null;
         [ForeignKey("UserId")]
         public int UserId { get; set; }
-
         public string Location { get; set; }
     }
 }
