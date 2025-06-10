@@ -12,7 +12,7 @@ namespace IncidentsAppApi.Controllers
         private readonly MyDbContext _context = context;
 
         [HttpGet]
-        public async Task<ActionResult<List<Incident>>> GetAllIncidents([FromBody]AlllIncidentsBody userData)
+        public async Task<ActionResult<List<Incident>>> GetAllIncidents([FromBody]AllIncidentsBody userData)
         {
             IEnumerable<User> users = _context.Users.Where(u => u.Username == userData.username);
 

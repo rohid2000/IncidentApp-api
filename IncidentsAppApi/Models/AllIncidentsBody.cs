@@ -1,6 +1,6 @@
 ﻿namespace IncidentsAppApi.Models
 {
-    public class AlllIncidentsBody
+    public class AllIncidentsBody
     {
         public string username { get; set; }
     }
