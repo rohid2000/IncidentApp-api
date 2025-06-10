@@ -21,7 +21,6 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-Encryptor.Init();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -37,4 +36,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+Encryptor.Init();
 app.Run();
+

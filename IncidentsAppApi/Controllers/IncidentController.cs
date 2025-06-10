@@ -12,8 +12,18 @@ namespace IncidentsAppApi.Controllers
         private readonly MyDbContext _context = context;
 
         [HttpGet]
-        public async Task<ActionResult<List<Incident>>> GetAllIncidents()
+        public async Task<ActionResult<List<Incident>>> GetAllIncidents([FromBody]AlllIncidentsBody userData)
         {
+            IEnumerable<User> users = _context.Users.Where(u => u.Username == userData.username);
+
+            if (!users.Any())
+            {
+                return BadRequest();
+            }
+            if (!users.First().IsAdmin)
+            {
+                return BadRequest();
+            }
             return Ok(await _context.Incidents.ToListAsync());
         }
 

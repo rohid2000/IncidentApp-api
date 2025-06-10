@@ -31,17 +31,14 @@ namespace IncidentsAppApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddUser(User newUser)
+        public async Task<IActionResult> AddUser(LoginModel login)
         {
-            if (newUser is null)
-            {
-                return BadRequest();
-            }
+            User user = new User() { Username = login.Username, Password = Encryptor.Encrypt(login.Password), IsAdmin = false };
 
-            _context.Users.Add(newUser);
+            _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetUserById), new { id = newUser.Id }, newUser);
+            return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
         }
 
         [HttpPut("{id}")]//Updates whole object

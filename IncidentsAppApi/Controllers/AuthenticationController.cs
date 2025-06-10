@@ -12,11 +12,6 @@ namespace IncidentsAppApi.Controllers
 {
     public class AuthenticationController : ControllerBase
     {
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
-
         private readonly IConfiguration _config;
         private readonly MyDbContext _context;
 
@@ -27,17 +22,24 @@ namespace IncidentsAppApi.Controllers
         }
 
         [HttpPost("api/login")]
-        public async Task<IActionResult> Login([FromForm] LoginModel login)
+        public IActionResult Login([FromBody] LoginModel login)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u =>
+            var users = _context.Users.Where(u =>
                 u.Username == login.Username);
 
-            //if (user == null || !BCrypt.Net.BCrypt.Verify(login.Password, user.Password))
-            //{
-            //    return Unauthorized("Invalid credentials!");
-            //}
+            if (!users.Any())
+            {
+                return NotFound();
+            }
+            User user = users.First();
 
-            return Ok();
+            string decryptedPassword = Encryptor.Decrypt(user.Password);
+
+            if (decryptedPassword != login.Password)
+            {
+                return BadRequest();
+            }
+            return Ok(new { username = user.Username, isAdmin = user.IsAdmin });
         }
     }
 }
