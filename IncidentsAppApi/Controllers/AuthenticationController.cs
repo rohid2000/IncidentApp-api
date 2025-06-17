@@ -39,7 +39,7 @@ namespace IncidentsAppApi.Controllers
             {
                 return BadRequest();
             }
-            return Ok(new { username = user.Username, isAdmin = user.IsAdmin });
+            return Ok(new { id = user.Id, username = user.Username, isAdmin = user.IsAdmin });
         }
     }
 }

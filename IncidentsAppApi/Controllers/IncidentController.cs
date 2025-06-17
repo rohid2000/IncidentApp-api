@@ -29,14 +29,14 @@ namespace IncidentsAppApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Incident>> GetIncidentById(int id)
+        public async Task<ActionResult<Incident>> GetIncidentByUserid(int id)
         {
-            var incident = await _context.Incidents.FindAsync(id);
-            if (incident is null)
+            var user = await _context.Users.FindAsync(id);
+            if (user is null)
             {
                 return NotFound();
             }
-            return Ok(incident);
+            return Ok(user.Incidents);
         }
 
         [HttpPost]
@@ -50,7 +50,7 @@ namespace IncidentsAppApi.Controllers
             _context.Incidents.Add(newIncident);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetIncidentById), new { id = newIncident.Id }, newIncident);
+            return Ok();
         }
 
         [HttpPut("{id}")]//Updates whole object
