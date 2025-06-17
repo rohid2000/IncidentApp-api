@@ -1,4 +1,5 @@
-﻿using IncidentsAppApi.Database;
+﻿using IncidentsAppApi.Body_s;
+using IncidentsAppApi.Database;
 using IncidentsAppApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -67,7 +68,24 @@ namespace IncidentsAppApi.Controllers
 
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
+        }
+
+        [HttpPatch("{id}")]//Updates one or multiple properties
+        public async Task<IActionResult> UpateIncidentStatusAndPriority(int id, PatchIncidentBody patchIncidentBody)
+        {
+            var incident = await _context.Incidents.FindAsync(id);
+            if (incident is null)
+            {
+                return BadRequest();
+            }
+
+            incident.Status = patchIncidentBody.Status;
+            incident.Priority = patchIncidentBody.Priority;
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
         [HttpDelete("{id}")]
@@ -82,7 +100,7 @@ namespace IncidentsAppApi.Controllers
             _context.Incidents.Remove(incident);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
     }
 }
