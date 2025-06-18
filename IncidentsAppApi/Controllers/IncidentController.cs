@@ -42,7 +42,7 @@ namespace IncidentsAppApi.Controllers
             List<IncidentReturn> result = new List<IncidentReturn>();
             foreach(Incident incident in incidents)
             {
-                User incidentUser = _context.Users.Where(u => u.Id == incident.UserId).First();
+                User? incidentUser = _context.Users.FirstOrDefault(u => u.Id == incident.UserId);
 
                 result.Add(new IncidentReturn()
                 {
@@ -50,7 +50,7 @@ namespace IncidentsAppApi.Controllers
                     Description = incident.Description,
                     Status = incident.Status,
                     Priority = incident.Priority,
-                    Username = incidentUser.Username,
+                    Username = incidentUser?.Username ?? "",
                     Location = incident.Location
                 });
             }
