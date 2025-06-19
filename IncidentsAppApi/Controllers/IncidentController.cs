@@ -13,6 +13,7 @@ namespace IncidentsAppApi.Controllers
         public string Status { get; set; }
         public string? Priority { get; set; }
         public string Username { get; set; }
+        public DateTime ReportDate { get; set; }
         public string Location { get; set; }
     }
 
@@ -51,6 +52,7 @@ namespace IncidentsAppApi.Controllers
                     Status = incident.Status,
                     Priority = incident.Priority,
                     Username = incidentUser?.Username ?? "",
+                    ReportDate = incident.ReportDate,
                     Location = incident.Location
                 });
             }
@@ -74,14 +76,24 @@ namespace IncidentsAppApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Incident>> AddIncident(Incident newIncident)
+        public async Task<ActionResult<Incident>> AddIncident(AddIncidentBody newIncident)
         {
             if (newIncident is null)
             {
                 return BadRequest();
             }
 
-            _context.Incidents.Add(newIncident);
+            var incident = new Incident
+            {
+                Description = newIncident.Description,
+                Status = newIncident.Status,    
+                Priority = newIncident.Priority,
+                UserId = newIncident.UserId,
+                ReportDate = DateTime.Now,
+                Location = newIncident.Location
+            };
+
+            _context.Incidents.Add(incident);
             await _context.SaveChangesAsync();
 
             return Ok();
