@@ -1,6 +1,6 @@
 @IncidentsAppApi_HostAddress = http://localhost:5052
 
-GET {{IncidentsAppApi_HostAddress}}/weatherforecast/
+GET {{IncidentsAppApi_HostAddress}}/incident/
 Accept: application/json
 
 ###
