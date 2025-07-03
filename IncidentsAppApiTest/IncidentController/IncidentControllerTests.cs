@@ -10,8 +10,6 @@ namespace IncidentsAppApiTest.IncidentController
     using IncidentsAppApiTest.Helpers;
     using IncidentsAppApiTest.Providers;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore.Query;
-    using System.Linq.Expressions;
 
     public class IncidentControllerTests
     {
@@ -27,7 +25,6 @@ namespace IncidentsAppApiTest.IncidentController
             _incidentSet = new Mock<DbSet<Incident>>();
             _userSet = new Mock<DbSet<User>>();
 
-            // Setup the Users DbSet
             var users = new List<User>
             {
                 new User { Id = 1, Username = "Test", IsAdmin = false }
@@ -72,7 +69,7 @@ namespace IncidentsAppApiTest.IncidentController
         }
 
         [Fact]
-        public async Task GetAllIncidents_With_ResultOk()
+        public async Task GetAllIncidents_ReturnsOk()
         {
             //Arrange
             var adminUser = new User { Id = 1, Username = "AdminUser", IsAdmin = true };
@@ -142,7 +139,7 @@ namespace IncidentsAppApiTest.IncidentController
         }
 
         [Fact]
-        public async Task GetIncidentsByUserId_With_ResultOk()
+        public async Task GetIncidentsByUserId_With_ReturnsOk()
         {
             // Arrange
             int userId = 1;
@@ -188,7 +185,7 @@ namespace IncidentsAppApiTest.IncidentController
         }
 
         [Fact]
-        public async Task AddIncident_With_ResultOk()
+        public async Task AddIncident_With_ReturnsOk()
         {
             // Arrange
             var incident = new AddIncidentBody
@@ -219,7 +216,87 @@ namespace IncidentsAppApiTest.IncidentController
         [Fact]
         public async Task UpateIncidentStatusAndPriority_Incident_Null_ReturnBadRequest()
         {
+            // Arrange
+            _context.Setup(x => x.Incidents.FindAsync(It.IsAny<int>()))
+                    .ReturnsAsync((Incident)null);
 
+            var controller = new IncidentController(_context.Object);
+            var patchData = new PatchIncidentBody { Status = "Gemeld" };
+
+            // Act
+            var result = await controller.UpateIncidentStatusAndPriority(1, patchData);
+
+            // Assert
+            Assert.IsType<BadRequestResult>(result);
+        }
+
+        [Fact]
+        public async Task UpateIncidentStatusAndPriority_With_ReturnsOk()
+        {
+            // Arrange
+            var incident = new Incident { Id = 1, Status = "Gemeld" };
+
+            _context.Setup(x => x.Incidents.FindAsync(1))
+                    .ReturnsAsync(incident);
+
+            _context.Setup(x => x.SaveChangesAsync(default))
+                    .ReturnsAsync(1);
+
+            var controller = new IncidentController(_context.Object);
+            var patchData = new PatchIncidentBody { Status = "In Behandeling", Priority = "High" };
+
+            // Act
+            var result = await controller.UpateIncidentStatusAndPriority(1, patchData);
+
+            // Assert
+            Assert.IsType<OkResult>(result);
+            Assert.Equal("In Behandeling", incident.Status);
+            Assert.Equal("High", incident.Priority); 
+            _context.Verify(x => x.SaveChangesAsync(default), Times.Once);
+        }
+
+        [Fact]
+        public async Task DeleteIncidentByid_No_Incident_Found_ReturnsNotFound()
+        {
+            // Arrange
+            _context.Setup(x => x.Incidents.FindAsync(It.IsAny<int>()))
+                       .ReturnsAsync((Incident)null);
+
+            var controller = new IncidentController(_context.Object);
+
+            // Act
+            var result = await controller.DeleteIncidentByid(1);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+            _context.Verify(x => x.SaveChangesAsync(default), Times.Never);
+        }
+
+        [Fact]
+        public async Task DeleteIncidentByid_ReturnsOk()
+        {
+            // Arrange
+            var incident = new Incident { Id = 1 };
+
+            _context.Setup(x => x.Incidents.FindAsync(1))
+                      .ReturnsAsync(incident);
+
+            _context.Setup(x => x.SaveChangesAsync(default))
+                      .ReturnsAsync(1);
+
+            // Setup Remove to track deletion
+            _context.Setup(x => x.Incidents.Remove(incident))
+                      .Verifiable();
+
+            var controller = new IncidentController(_context.Object);
+
+            // Act
+            var result = await controller.DeleteIncidentByid(1);
+
+            // Assert
+            Assert.IsType<OkResult>(result);
+            _context.Verify(x => x.Incidents.Remove(incident), Times.Once); 
+            _context.Verify(x => x.SaveChangesAsync(default), Times.Once);
         }
     }
 }
