@@ -35,7 +35,6 @@ namespace IncidentsAppApiTest.IncidentController
             _userSet.As<IQueryable<User>>().Setup(m => m.ElementType).Returns(users.ElementType);
             _userSet.As<IQueryable<User>>().Setup(m => m.GetEnumerator()).Returns(users.GetEnumerator());
 
-            // Mock the expression-bodied property
             _context.SetupGet(x => x.Users).Returns(_userSet.Object);
             _context.SetupGet(x => x.Incidents).Returns(_incidentSet.Object);
 
