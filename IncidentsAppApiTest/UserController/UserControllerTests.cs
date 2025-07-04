@@ -30,7 +30,7 @@ namespace IncidentsAppApiTest.UserController
 
             var users = new List<User>
             {
-                new User { Id = 1, Username = "Test", IsAdmin = false }
+                new User { Id = 1, Username = "TestUser", IsAdmin = false }
             }.AsQueryable();
 
             _userSet.As<IQueryable<User>>().Setup(m => m.Provider).Returns(users.Provider);
@@ -49,8 +49,8 @@ namespace IncidentsAppApiTest.UserController
             //Arrange
             var testUsers = new List<User>
             {
-                new User { Id = 1, Username = "user1", IsAdmin = false },
-                new User { Id = 2, Username = "user2", IsAdmin = true }
+                new User { Id = 1, Username = "TestUser1", IsAdmin = false },
+                new User { Id = 2, Username = "TestUser2", IsAdmin = true }
             }.AsQueryable();
 
             var mockDbSet = new Mock<DbSet<User>>();
