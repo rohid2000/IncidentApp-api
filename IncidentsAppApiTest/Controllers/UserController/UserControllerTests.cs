@@ -1,15 +1,8 @@
-﻿using IncidentsAppApi.Database;
-using IncidentsAppApi.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace IncidentsAppApiTest.UserController
+namespace IncidentsAppApiTest.Controllers.UserController
 {
     using IncidentsAppApi;
     using IncidentsAppApi.Controllers;
@@ -107,10 +100,10 @@ namespace IncidentsAppApiTest.UserController
             _context.Setup(x => x.Users.FindAsync(1))
                    .ReturnsAsync(testUser);
 
-            // Act
+            //Act
             var result = await _controller.GetUserById(1);
 
-            // Assert
+            //Assert
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var returnedUser = Assert.IsType<User>(okResult.Value);
             Assert.Equal(testUser.Id, returnedUser.Id);
@@ -137,10 +130,10 @@ namespace IncidentsAppApiTest.UserController
                    .ReturnsAsync(1)
                    .Verifiable();
 
-            // Act
+            //Act
             var result = await _controller.AddUser(newUser);
 
-            // Assert
+            //Assert
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
             Assert.Equal(nameof(_controller.GetUserById), createdAtActionResult.ActionName);
 

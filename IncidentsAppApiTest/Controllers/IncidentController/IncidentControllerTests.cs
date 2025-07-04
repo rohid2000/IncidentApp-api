@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Moq;
 
-namespace IncidentsAppApiTest.IncidentController
+namespace IncidentsAppApiTest.Controllers.IncidentController
 {
     using IncidentsAppApi.Body_s;
     using IncidentsAppApi.Controllers;
@@ -57,13 +57,13 @@ namespace IncidentsAppApiTest.IncidentController
         [Fact]
         public async Task GetAllIncidents_No_Users_Found_As_Admin_ReturnsBadRequest()
         {
-            // Arrange
+            //Arrange
             var userData = new AllIIncident { username = "Test" };
 
-            // Act
+            //Act
             var result = await _controller.GetAllIncidents(userData);
 
-            // Assert
+            //Assert
             Assert.IsType<BadRequestResult>(result.Result);
         }
 
@@ -140,7 +140,7 @@ namespace IncidentsAppApiTest.IncidentController
         [Fact]
         public async Task GetIncidentsByUserId_With_ReturnsOk()
         {
-            // Arrange
+            //Arrange
             int userId = 1;
             var user = new User { Id = userId, Username = "TestUser" };
 
@@ -161,10 +161,10 @@ namespace IncidentsAppApiTest.IncidentController
 
             _context.Setup(x => x.Incidents).Returns(mockIncidents.Object);
 
-            // Act
+            //Act
             var result = await _controller.GetIncidentsByUserid(userId);
 
-            // Assert
+            //Assert
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var returnedIncidents = Assert.IsType<List<Incident>>(okResult.Value);
             Assert.Equal(2, returnedIncidents.Count);
@@ -186,7 +186,7 @@ namespace IncidentsAppApiTest.IncidentController
         [Fact]
         public async Task AddIncident_With_ReturnsOk()
         {
-            // Arrange
+            //Arrange
             var incident = new AddIncidentBody
             {
                 Description = "Test incident",
@@ -198,10 +198,10 @@ namespace IncidentsAppApiTest.IncidentController
             _context.Setup(x => x.Incidents).Returns(mockIncidents.Object);
             _context.Setup(x => x.SaveChangesAsync(default)).ReturnsAsync(1);
 
-            // Act
+            //Act
             var result = await _controller.AddIncident(incident);
 
-            // Assert
+            //Assert
             Assert.IsType<OkResult>(result.Result);
 
             mockIncidents.Verify(x => x.Add(It.Is<Incident>(i =>
@@ -215,23 +215,23 @@ namespace IncidentsAppApiTest.IncidentController
         [Fact]
         public async Task UpateIncidentStatusAndPriority_Incident_Null_ReturnBadRequest()
         {
-            // Arrange
+            //Arrange
             _context.Setup(x => x.Incidents.FindAsync(It.IsAny<int>()))
                     .ReturnsAsync((Incident)null);
 
             var patchData = new PatchIncidentBody { Status = "Gemeld" };
 
-            // Act
+            //Act
             var result = await _controller.UpateIncidentStatusAndPriority(1, patchData);
 
-            // Assert
+            //Assert
             Assert.IsType<BadRequestResult>(result);
         }
 
         [Fact]
         public async Task UpateIncidentStatusAndPriority_With_ReturnsOk()
         {
-            // Arrange
+            //Arrange
             var incident = new Incident { Id = 1, Status = "Gemeld" };
 
             _context.Setup(x => x.Incidents.FindAsync(1))
@@ -242,7 +242,7 @@ namespace IncidentsAppApiTest.IncidentController
 
             var patchData = new PatchIncidentBody { Status = "In Behandeling", Priority = "High" };
 
-            // Act
+            //Act
             var result = await _controller.UpateIncidentStatusAndPriority(1, patchData);
 
             // Assert
@@ -255,14 +255,14 @@ namespace IncidentsAppApiTest.IncidentController
         [Fact]
         public async Task DeleteIncidentByid_No_Incident_Found_ReturnsNotFound()
         {
-            // Arrange
+            //Arrange
             _context.Setup(x => x.Incidents.FindAsync(It.IsAny<int>()))
                        .ReturnsAsync((Incident)null);
 
-            // Act
+            //Act
             var result = await _controller.DeleteIncidentByid(1);
 
-            // Assert
+            //Assert
             Assert.IsType<NotFoundResult>(result);
             _context.Verify(x => x.SaveChangesAsync(default), Times.Never);
         }
@@ -270,7 +270,7 @@ namespace IncidentsAppApiTest.IncidentController
         [Fact]
         public async Task DeleteIncidentByid_ReturnsOk()
         {
-            // Arrange
+            //Arrange
             var incident = new Incident { Id = 1 };
 
             _context.Setup(x => x.Incidents.FindAsync(1))
@@ -282,10 +282,10 @@ namespace IncidentsAppApiTest.IncidentController
             _context.Setup(x => x.Incidents.Remove(incident))
                       .Verifiable();
 
-            // Act
+            //Act
             var result = await _controller.DeleteIncidentByid(1);
 
-            // Assert
+            //Assert
             Assert.IsType<OkResult>(result);
             _context.Verify(x => x.Incidents.Remove(incident), Times.Once); 
             _context.Verify(x => x.SaveChangesAsync(default), Times.Once);

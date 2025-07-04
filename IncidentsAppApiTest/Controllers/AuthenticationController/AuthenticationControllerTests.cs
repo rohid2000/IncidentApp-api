@@ -1,14 +1,7 @@
-﻿using IncidentsAppApi.Database;
-using IncidentsAppApi.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace IncidentsAppApiTest.AuthenticationController
+namespace IncidentsAppApiTest.Controllers.AuthenticationController
 {
     using IncidentsAppApi;
     using IncidentsAppApi.Controllers;
@@ -37,7 +30,7 @@ namespace IncidentsAppApiTest.AuthenticationController
         [Fact]
         public void Login_UserNotFound_ReturnsNotFound()
         {
-            // Arrange
+            //Arrange
             var users = new List<User>().AsQueryable();
 
             _userSet.As<IQueryable<User>>().Setup(m => m.Provider).Returns(users.Provider);
