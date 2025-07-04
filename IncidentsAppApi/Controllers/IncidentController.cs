@@ -99,24 +99,6 @@ namespace IncidentsAppApi.Controllers
             return Ok();
         }
 
-        //[HttpPut("{id}")]//Updates whole object
-        //public async Task<IActionResult> UpdateIncident(int id, Incident updatedIncident)
-        //{
-        //    var incident = await _context.Incidents.FindAsync(id);
-        //    if (incident is null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    incident.Description = updatedIncident.Description;
-        //    incident.Status = updatedIncident.Status;
-        //    incident.Priority = updatedIncident.Priority;
-
-        //    await _context.SaveChangesAsync();
-
-        //    return Ok();
-        //}
-
         [HttpPatch("{id}")]//Updates one or multiple properties
         public async Task<IActionResult> UpateIncidentStatusAndPriority(int id, PatchIncidentBody patchIncidentBody)
         {

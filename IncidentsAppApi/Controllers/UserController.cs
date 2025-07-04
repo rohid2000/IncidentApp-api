@@ -46,24 +46,6 @@ namespace IncidentsAppApi.Controllers
             return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
         }
 
-        //[HttpPut("{id}")]//Updates whole object
-        //public async Task<IActionResult> UpdateUser(int id, User updatedUser)
-        //{
-        //    var user = await _context.Users.FindAsync(id);
-        //    if (user is null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    user.Username = updatedUser.Username;
-        //    user.Password = updatedUser.Password;
-        //    user.IsAdmin = updatedUser.IsAdmin;
-
-        //    await _context.SaveChangesAsync();
-
-        //    return NoContent();
-        //}
-
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserById(int id)
         {
