@@ -33,7 +33,12 @@ namespace IncidentsAppApi.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUser(LoginModel login)
         {
-            User user = new User() { Username = login.Username, Password = Encryptor.Encrypt(login.Password), IsAdmin = false };
+            User user = new User 
+            { 
+                Username = login.Username, 
+                Password = Encryptor.Encrypt(login.Password), 
+                IsAdmin = false 
+            };
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -41,23 +46,23 @@ namespace IncidentsAppApi.Controllers
             return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
         }
 
-        [HttpPut("{id}")]//Updates whole object
-        public async Task<IActionResult> UpdateUser(int id, User updatedUser)
-        {
-            var user = await _context.Users.FindAsync(id);
-            if (user is null)
-            {
-                return NotFound();
-            }
+        //[HttpPut("{id}")]//Updates whole object
+        //public async Task<IActionResult> UpdateUser(int id, User updatedUser)
+        //{
+        //    var user = await _context.Users.FindAsync(id);
+        //    if (user is null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            user.Username = updatedUser.Username;
-            user.Password = updatedUser.Password;
-            user.IsAdmin = updatedUser.IsAdmin;
+        //    user.Username = updatedUser.Username;
+        //    user.Password = updatedUser.Password;
+        //    user.IsAdmin = updatedUser.IsAdmin;
 
-            await _context.SaveChangesAsync();
+        //    await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserById(int id)

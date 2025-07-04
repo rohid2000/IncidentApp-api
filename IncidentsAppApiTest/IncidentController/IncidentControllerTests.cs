@@ -219,11 +219,10 @@ namespace IncidentsAppApiTest.IncidentController
             _context.Setup(x => x.Incidents.FindAsync(It.IsAny<int>()))
                     .ReturnsAsync((Incident)null);
 
-            var controller = new IncidentController(_context.Object);
             var patchData = new PatchIncidentBody { Status = "Gemeld" };
 
             // Act
-            var result = await controller.UpateIncidentStatusAndPriority(1, patchData);
+            var result = await _controller.UpateIncidentStatusAndPriority(1, patchData);
 
             // Assert
             Assert.IsType<BadRequestResult>(result);
@@ -241,11 +240,10 @@ namespace IncidentsAppApiTest.IncidentController
             _context.Setup(x => x.SaveChangesAsync(default))
                     .ReturnsAsync(1);
 
-            var controller = new IncidentController(_context.Object);
             var patchData = new PatchIncidentBody { Status = "In Behandeling", Priority = "High" };
 
             // Act
-            var result = await controller.UpateIncidentStatusAndPriority(1, patchData);
+            var result = await _controller.UpateIncidentStatusAndPriority(1, patchData);
 
             // Assert
             Assert.IsType<OkResult>(result);
@@ -261,10 +259,8 @@ namespace IncidentsAppApiTest.IncidentController
             _context.Setup(x => x.Incidents.FindAsync(It.IsAny<int>()))
                        .ReturnsAsync((Incident)null);
 
-            var controller = new IncidentController(_context.Object);
-
             // Act
-            var result = await controller.DeleteIncidentByid(1);
+            var result = await _controller.DeleteIncidentByid(1);
 
             // Assert
             Assert.IsType<NotFoundResult>(result);
@@ -283,14 +279,11 @@ namespace IncidentsAppApiTest.IncidentController
             _context.Setup(x => x.SaveChangesAsync(default))
                       .ReturnsAsync(1);
 
-            // Setup Remove to track deletion
             _context.Setup(x => x.Incidents.Remove(incident))
                       .Verifiable();
 
-            var controller = new IncidentController(_context.Object);
-
             // Act
-            var result = await controller.DeleteIncidentByid(1);
+            var result = await _controller.DeleteIncidentByid(1);
 
             // Assert
             Assert.IsType<OkResult>(result);
